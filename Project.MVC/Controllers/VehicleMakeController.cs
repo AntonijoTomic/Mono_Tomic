@@ -13,44 +13,29 @@ namespace Project.MVC.Controllers
     public class VehicleMakeController : Controller
     {
         private readonly IVehicleMakeService _vehicleMakeService;
-        private readonly IPaginationService<VehicleMake> _pagination;
         private readonly IMapper _mapper;
 
         public VehicleMakeController(IMapper mapper)
         {
             _vehicleMakeService = Di.Create<IVehicleMakeService>();
-            _pagination = Di.Create<IPaginationService<VehicleMake>>();
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> Index(string sortby, string sortorder, string filter, int page = 1, int pageSize=5)
+        public async Task<IActionResult> Index(SortingInfo sort, PagingInfo paging)
         {
-            var vehicleMakes = await _vehicleMakeService.GetAllVehiclesMakes();
-
-            if (!string.IsNullOrEmpty(sortby))
-            {
-                vehicleMakes = await _vehicleMakeService.SortMakes( sortby, sortorder);
-            }
-            if (!string.IsNullOrEmpty(filter))
-            {
-                vehicleMakes = await _vehicleMakeService.FilterBySearch((List<VehicleMake>)vehicleMakes, filter);
-            }        
-            var totalItems = vehicleMakes.Count();
-            var totalPages = _pagination.GetTotalPages(totalItems, pageSize);
-            var pagedMakes = _pagination.GetPage(vehicleMakes, page, pageSize);
-           
+          
+            var (vehicleMakes, totalPages) = await _vehicleMakeService.sortMakesAndFilter(sort, paging);
             var paginationInfo = new PaginationInfo
             {
-                CurrentPage = page,
+                CurrentPage = paging.PageNumber,
                 TotalPages = totalPages
             };
+
             var makesViewModel = new VehicleMakeView
             {
-                SortBy = sortby,
-                SortOrder = sortorder,
-                PaginationInfo = paginationInfo,
-                Filter =filter,
-                Makes = _mapper.Map<IEnumerable<VehicleMake>>(pagedMakes)
+                sort= sort,
+                PaginationInfo = paginationInfo,      
+                Makes = _mapper.Map<IEnumerable<VehicleMake>>(vehicleMakes)
             };
 
             return View(makesViewModel);
@@ -90,9 +75,9 @@ namespace Project.MVC.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateVehicleMake(VehicleMake updatedVehicle)
+        public async Task<IActionResult> Edit(VehicleMakeView makeView)
         {
-            int result = await _vehicleMakeService.UpdateVehicleMake(updatedVehicle);
+            int result = await _vehicleMakeService.UpdateVehicleMake(makeView.make);
 
             if (result == 1)
             {
@@ -100,12 +85,30 @@ namespace Project.MVC.Controllers
             }
             else if (result == 0)
             {
-                return NotFound("Vehicle make not found.");
+                return NotFound("Vehicle model not found.");
             }
             else
             {
-                return StatusCode(500, "Failed to update vehicle make.");
+                return StatusCode(500, "Failed to update vehicle model.");
             }
+        }
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var make = await _vehicleMakeService.getMake(id);
+
+            if (make == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new VehicleMakeView
+            {
+                make = make
+
+            };
+
+            return View(viewModel);
         }
     }
 }

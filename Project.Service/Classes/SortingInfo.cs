@@ -11,7 +11,7 @@ namespace Project.Service.Classes
         public string SortBy { get; set; }
         public string SortOrder { get; set; }
 
-        public int Filter { get; set; }
+        public string Filter { get; set; }
     
     }
 }

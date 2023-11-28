@@ -22,9 +22,9 @@ namespace Project.Service.Interfaces
       //  Task<int> UpdateVehicleModel(VehicleModel vehicle);//
      //   Task<int> DeleteVehicleModel(int id);//
 
-        Task<IEnumerable<VehicleMake>> SortMakes(string sort, string sortOrder);
-     //  Task<(IEnumerable<VehicleModel>, int totalPages)> SortModelsAndFilter(SortingInfo sort, PagingInfo paging);
-    
+        Task<(IEnumerable<VehicleMake>, int totalPages)> sortMakesAndFilter(SortingInfo sort, PagingInfo paging);
+        //  Task<(IEnumerable<VehicleModel>, int totalPages)> SortModelsAndFilter(SortingInfo sort, PagingInfo paging);
+
         Task<IEnumerable<VehicleMake>> FilterBySearch(List<VehicleMake> makes, string search);
 
     //   Task<IEnumerable<VehicleModel>> FilterByMake(int filterId);//

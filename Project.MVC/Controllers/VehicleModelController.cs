@@ -19,7 +19,7 @@ namespace Project.MVC.Controllers
     {
         private readonly IVehicleMakeService _vehicleService;
         private readonly IVehicleModelService _vehicleModelService;
-        private readonly IPaginationService<VehicleModel> _pagination;
+
         private readonly IMapper _mapper;
    
 
@@ -27,7 +27,7 @@ namespace Project.MVC.Controllers
         {
             _vehicleService = Di.Create<IVehicleMakeService>();
             _vehicleModelService = Di.Create <IVehicleModelService>();
-            _pagination = Di.Create<IPaginationService<VehicleModel>>();
+
             _mapper = mapper;
 
         }

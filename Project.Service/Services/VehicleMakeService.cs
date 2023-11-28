@@ -105,19 +105,32 @@ namespace Project.Service.Services
         }
 
 
-        public async Task<IEnumerable<VehicleMake>> SortMakes(string sort, string sortOrder)
+        public async Task<(IEnumerable<VehicleMake>, int totalPages)> sortMakesAndFilter(SortingInfo sort, PagingInfo paging)
         {
             var makes =  _dbContext.VehicleMake.AsQueryable();
-            switch (sort)
+            switch (sort.SortBy)
             {
                 case "Name":
-                    makes = sortOrder == "asc" ? makes.OrderBy(m => m.Name): makes.OrderByDescending(m => m.Name);
+                    makes = sort.SortOrder == "asc" ? makes.OrderBy(m => m.Name): makes.OrderByDescending(m => m.Name);
                     break;
                 case "Abrv":
-                    makes = sortOrder == "asc" ? makes.OrderBy(m => m.Abrv) : makes.OrderByDescending(m => m.Abrv);
+                    makes = sort.SortOrder == "asc" ? makes.OrderBy(m => m.Abrv) : makes.OrderByDescending(m => m.Abrv);
                     break;
             }
-            return await makes.ToListAsync();
+ 
+
+
+            if (!string.IsNullOrEmpty(sort.Filter))
+            {
+                makes = makes.Where(m => m.Name.ToUpper().Contains(sort.Filter.ToUpper()));
+            }
+
+            var totalItems = makes.Count();
+            int totalPages = (int)Math.Ceiling((double)totalItems / paging.PageSize);
+
+            makes = makes.Skip((paging.PageNumber - 1) * paging.PageSize).Take(paging.PageSize);
+
+            return (await makes.ToListAsync(), totalPages);
         } 
 
         public async Task<IEnumerable<VehicleMake>> FilterBySearch(List<VehicleMake> makes,string search)

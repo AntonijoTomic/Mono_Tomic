@@ -16,8 +16,6 @@ namespace Project.Service
         {
             Bind<IVehicleMakeService>().To<VehicleMakeService>();
             Bind<IVehicleModelService>().To<VehicleModelService>();
-            Bind<IPaginationService<VehicleMake>>().To<PaginationService<VehicleMake>>();
-            Bind<IPaginationService<VehicleModel>>().To<PaginationService<VehicleModel>>();
         }
     }
 }

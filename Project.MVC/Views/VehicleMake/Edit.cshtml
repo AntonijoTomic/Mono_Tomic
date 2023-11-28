@@ -1,0 +1,23 @@
+﻿@model Project.MVC.ViewModels.VehicleMakeView
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="make.Id" />
+
+    <div class="form-group">
+
+        <label asp-for="make.Name"></label>
+        <input asp-for="make.Name" class="form-control" />
+        <span asp-validation-for="make.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="make.Abrv"></label>
+        <input asp-for="make.Abrv" class="form-control" />
+        <span asp-validation-for="make.Abrv" class="text-danger"></span>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Save changes</button>
+</form>
+
+
+    
+    

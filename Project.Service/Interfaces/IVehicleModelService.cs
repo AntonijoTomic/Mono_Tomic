@@ -18,7 +18,7 @@ namespace Project.Service.Interfaces
         Task<(IEnumerable<VehicleModel>, int totalPages)> SortModelsAndFilter(SortingInfo sort, PagingInfo paging);
 
         Task<IEnumerable<VehicleModel>> FilterByMake(int filterId);
-        IQueryable<VehicleModel> SortModels(IQueryable<VehicleModel> models, SortingInfo sort);
+
 
     }
 }

@@ -73,24 +73,7 @@ namespace Project.Service.Services
            return await _dbContext.VehicleModel.Where(m => m.Id == id).Include(vm => vm.Make).FirstOrDefaultAsync();
         }
 
-        public IQueryable<VehicleModel> SortModels(IQueryable<VehicleModel> models, SortingInfo sort)
-        {
-            switch (sort.SortBy)
-            {
-                case "Name":
-                    models = sort.SortOrder == "asc" ? models.OrderBy(m => m.Name) : models.OrderByDescending(m => m.Name);
-                    break;
-                case "Abrv":
-                    models = sort.SortOrder == "asc" ? models.OrderBy(m => m.Abrv) : models.OrderByDescending(m => m.Abrv);
-                    break;
-                case "Makes":
-                    var makes = _dbContext.VehicleMake.AsQueryable();
-                    models = sort.SortOrder == "asc" ? models.OrderBy(m => makes.FirstOrDefault(make => make.Id == m.MakeId).Name) : models.OrderByDescending(m => makes.FirstOrDefault(make => make.Id == m.MakeId).Name);
-                    break;
-            }
-
-            return models;
-        }
+  
 
         public async Task<(IEnumerable<VehicleModel>, int totalPages)> SortModelsAndFilter(SortingInfo sort, PagingInfo paging)
         {
@@ -111,9 +94,9 @@ namespace Project.Service.Services
             }
 
 
-            if (sort.Filter > 0)
+            if (Convert.ToInt32(sort.Filter) > 0)
             {
-                models = models.Where(m => m.Make.Id == sort.Filter);
+                models = models.Where(m => m.Make.Id == (Convert.ToInt32(sort.Filter)));
             }
 
             var totalItems =  models.Count();

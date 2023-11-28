@@ -16,13 +16,13 @@
         <tr>
 
             <th>
-                <a asp-action="Index" asp-route-filter="@(Model.filter)" asp-route-sortby="Name" asp-route-sortorder="@(Model.SortBy == "Name" && Model.SortOrder == "asc" ? "desc" : "asc")">Name</a>
+                <a asp-action="Index" asp-route-filter="@(Model.sort.Filter)" asp-route-sortby="Name" asp-route-sortorder="@(Model.sort.SortBy == "Name" && Model.sort.SortOrder == "asc" ? "desc" : "asc")">Name</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-filter="@(Model.filter)" asp-route-sortby="Abrv" asp-route-sortorder="@(Model.SortBy == "Abrv" && Model.SortOrder == "asc" ? "desc" : "asc")">Abrv</a>
+                <a asp-action="Index" asp-route-filter="@(Model.sort.Filter)" asp-route-sortby="Abrv" asp-route-sortorder="@(Model.sort.SortBy == "Abrv" && Model.sort.SortOrder == "asc" ? "desc" : "asc")">Abrv</a>
             </th>
              <th>
-                <a asp-action="Index" asp-route-filter="@(Model.filter)" asp-route-sortby="Makes" asp-route-sortorder="@(Model.SortBy == "Makes" && Model.SortOrder == "asc" ? "desc" : "asc")">Makes</a>
+                <a asp-action="Index" asp-route-filter="@(Model.sort.Filter)" asp-route-sortby="Makes" asp-route-sortorder="@(Model.sort.SortBy == "Makes" && Model.sort.SortOrder == "asc" ? "desc" : "asc")">Makes</a>
             </th>
             <th>
                 <a>Delete</a>
@@ -52,8 +52,9 @@
                     </form>
                 </td>
                 <td>
-                    <button class="btn btn-primary" onclick="openEditModal('@vehicleModel.Id', '@vehicleModel.Name', '@vehicleModel.Abrv','@vehicleModel.MakeId')">Edit</button>
+                    <a href="@Url.Action("Edit", "VehicleModel", new { id = vehicleModel.Id })" class="btn btn-primary">Edit</a>
                 </td>
+
             </tr>
         }
     </tbody>
@@ -64,69 +65,27 @@
         @if (Model.PaginationInfo.CurrentPage > 1)
         {
             <li class="page-item">
-                <a class="page-link" asp-action="Index" asp-route-page="@(Model.PaginationInfo.CurrentPage - 1)" asp-route-filter="@(Model.filter)" asp-route-sortby="@(Model.SortBy)" asp-route-sortorder="@(Model.SortOrder)">Previous</a>
+                <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PaginationInfo.CurrentPage - 1)" asp-route-filter="@(Model.sort.Filter)" asp-route-sortby="@(Model.sort.SortBy)" asp-route-sortorder="@(Model.sort.SortOrder)">Previous</a>
             </li>
         }
 
         @for (int i = 1; i <= Model.PaginationInfo.TotalPages; i++)
         {
             <li class="page-item @(i == Model.PaginationInfo.CurrentPage ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-filter="@(Model.filter)" asp-route-sortby="@(Model.SortBy)" asp-route-sortorder="@(Model.SortOrder)">@i</a>
+                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-filter="@(Model.sort.Filter)" asp-route-sortby="@(Model.sort.SortBy)" asp-route-sortorder="@(Model.sort.SortOrder)">@i</a>
             </li>
         }
 
         @if (Model.PaginationInfo.CurrentPage < Model.PaginationInfo.TotalPages)
         {
             <li class="page-item">
-                <a class="page-link" asp-action="Index" asp-route-page="@(Model.PaginationInfo.CurrentPage + 1)" asp-route-filter="@(Model.filter)" asp-route-sortby="@(Model.SortBy)" asp-route-sortorder="@(Model.SortOrder)">NEXT</a>
+                <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PaginationInfo.CurrentPage + 1)" asp-route-filter="@(Model.sort.Filter)" asp-route-sortby="@(Model.sort.SortBy)" asp-route-sortorder="@(Model.sort.SortOrder)">NEXT</a>
             </li>
         }
     </ul>
 }
- <div class="modal" id="editVehicleModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Vehicle</h5>
-            </div>
-            <div class="modal-body">
-                <form id="editForm" asp-controller="VehicleModel" asp-action="UpdateVehicleModel" method="post">
-                    <input type="hidden" name="Id" id="editId" />
-               
-                    <div class="form-group">
-                        <label for="editName">Name</label>
-                        <input type="text" class="form-control" name="Name" id="editName" />
-                    </div>
-                    <div class="form-group">
-                        <label for="editAbrv">Abbreviation</label>
-                        <input type="text" class="form-control" name="Abrv" id="editAbrv" />
-                    </div>
-                    <div class="form-group">
-                        <label for="editMake">Choose make:</label>
-                        <select class="form-select" name="MakeId" id="editMake">
-                            @foreach (var make in Model.Makes)
-                            {
-                                <option name="MakeId" value="@make.Id">@make.Name</option>
-                            }
-                        </select>
-
-                    </div>
-                    <br />
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 
-<script>
-    function openEditModal(id, name, abrv, makeId) {
-        document.getElementById('editId').value = id;
-       // document.getElementById('editMakeId').value = makeId;
-        document.getElementById('editName').value = name;
-        document.getElementById('editAbrv').value = abrv;
-        $('#editMake').val(makeId);
-        $('#editVehicleModal').modal('show');
-    }
-</script>
+
+
+

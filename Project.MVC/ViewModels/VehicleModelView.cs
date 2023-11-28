@@ -7,9 +7,10 @@ namespace Project.MVC.ViewModels
     {
         public VehicleModel? modell { get; set; } //
         public int? Id { get; set; }
+        public SortingInfo? sort { get; set; }
 
-        public string ?SortBy { get; set; }
-        public string ?SortOrder { get; set; }
+        //  public string ?SortBy { get; set; }
+        //  public string ?SortOrder { get; set; }
         public PaginationInfo ? PaginationInfo { get; set; }
         public int? filter { get; set; }
 

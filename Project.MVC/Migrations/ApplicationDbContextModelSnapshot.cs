@@ -70,11 +70,13 @@ namespace Project.MVC.Migrations
 
             modelBuilder.Entity("Project.Service.Models.VehicleModel", b =>
                 {
-                    b.HasOne("Project.Service.Models.VehicleMake", null)
+                    b.HasOne("Project.Service.Models.VehicleMake", "Make")
                         .WithMany()
                         .HasForeignKey("MakeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Make");
                 });
 #pragma warning restore 612, 618
         }

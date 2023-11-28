@@ -30,10 +30,11 @@ namespace Project.Service
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<VehicleModel>()
-             .HasOne<VehicleMake>()
-             .WithMany()
-              .HasForeignKey(vm => vm.MakeId)
-             .OnDelete(DeleteBehavior.Cascade);
+             .HasOne(vm => vm.Make)
+            .WithMany()
+            .HasForeignKey(vm => vm.MakeId)
+             .OnDelete(DeleteBehavior.Cascade)
+            .OnDelete(DeleteBehavior.Cascade);
             base.OnModelCreating(modelBuilder);
         }
     }

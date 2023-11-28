@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace Project.Service.Classes
 {
-    public class PaginationInfo
+    public class SortingInfo
     {
-        public int CurrentPage { get; set; }
-        public int TotalPages { get; set; }
+        public string SortBy { get; set; }
+        public string SortOrder { get; set; }
+
+        public int Filter { get; set; }
+    
     }
 }
+

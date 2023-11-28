@@ -11,8 +11,8 @@ using Project.Service;
 namespace Project.MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231020140439_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231124154111_newMigration")]
+    partial class newMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -72,11 +72,13 @@ namespace Project.MVC.Migrations
 
             modelBuilder.Entity("Project.Service.Models.VehicleModel", b =>
                 {
-                    b.HasOne("Project.Service.Models.VehicleMake", null)
+                    b.HasOne("Project.Service.Models.VehicleMake", "Make")
                         .WithMany()
                         .HasForeignKey("MakeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Make");
                 });
 #pragma warning restore 612, 618
         }

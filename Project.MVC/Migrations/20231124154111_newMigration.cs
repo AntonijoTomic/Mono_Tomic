@@ -4,7 +4,7 @@
 
 namespace Project.MVC.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class newMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

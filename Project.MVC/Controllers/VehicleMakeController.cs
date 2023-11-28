@@ -12,13 +12,13 @@ namespace Project.MVC.Controllers
 {
     public class VehicleMakeController : Controller
     {
-        private readonly IVehicleService _vehicleMakeService;
+        private readonly IVehicleMakeService _vehicleMakeService;
         private readonly IPaginationService<VehicleMake> _pagination;
         private readonly IMapper _mapper;
 
         public VehicleMakeController(IMapper mapper)
         {
-            _vehicleMakeService = Di.Create<IVehicleService>();
+            _vehicleMakeService = Di.Create<IVehicleMakeService>();
             _pagination = Di.Create<IPaginationService<VehicleMake>>();
             _mapper = mapper;
         }
@@ -41,8 +41,6 @@ namespace Project.MVC.Controllers
            
             var paginationInfo = new PaginationInfo
             {
-                TotalItems = totalItems,
-                ItemsPerPage = pageSize,
                 CurrentPage = page,
                 TotalPages = totalPages
             };

@@ -14,7 +14,8 @@ namespace Project.Service
     {
         public override void Load()
         {
-            Bind<IVehicleService>().To<VehicleService>();  
+            Bind<IVehicleMakeService>().To<VehicleMakeService>();
+            Bind<IVehicleModelService>().To<VehicleModelService>();
             Bind<IPaginationService<VehicleMake>>().To<PaginationService<VehicleMake>>();
             Bind<IPaginationService<VehicleModel>>().To<PaginationService<VehicleModel>>();
         }

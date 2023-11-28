@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Ninject.Infrastructure.Language;
 using Project.MVC.ViewModels;
 using Project.Service;
@@ -15,65 +17,39 @@ namespace Project.MVC.Controllers
 {
     public class VehicleModelController : Controller
     {
-        private readonly IVehicleService _vehicleService;
+        private readonly IVehicleMakeService _vehicleService;
+        private readonly IVehicleModelService _vehicleModelService;
         private readonly IPaginationService<VehicleModel> _pagination;
         private readonly IMapper _mapper;
    
 
         public VehicleModelController(IMapper mapper)
         {
-            _vehicleService = Di.Create<IVehicleService>();
+            _vehicleService = Di.Create<IVehicleMakeService>();
+            _vehicleModelService = Di.Create <IVehicleModelService>();
             _pagination = Di.Create<IPaginationService<VehicleModel>>();
             _mapper = mapper;
 
         }
 
-        public async Task<IActionResult> Index(string sortby, string sortorder, int filter, int pageSize = 5, int page = 1)
+        public async Task<IActionResult> Index(SortingInfo sort, PagingInfo paging)
         {
-            var models = await _vehicleService.GetAllModels();
-            var makes = await _vehicleService.GetAllVehiclesMakes();
-
-
-            if (sortby== "Makes")
-            {
-                models = await _vehicleService.SortModels(sortby, sortorder, (List<VehicleMake>)makes);
-            }
-            else if(!string.IsNullOrEmpty(sortby))
-            {
-                models = await _vehicleService.SortModels(sortby, sortorder, (List<VehicleMake>)makes);
-            }
-            if (filter >0)
-            {
-                models = await _vehicleService.FilterByMake((List<VehicleModel>) models, filter);
-            }
-            var totalItems = models.Count();
-            var totalPages = _pagination.GetTotalPages(totalItems, pageSize);
-            var pagedModels = _pagination.GetPage(models, page, pageSize);
-
-            var paginationInfo = new PaginationInfo
-            {
-                TotalItems = totalItems,
-                ItemsPerPage = pageSize,
-                CurrentPage = page,
+  
+            var (models, totalPages) = await _vehicleModelService.SortModelsAndFilter(sort, paging);
+          
+            var paginationInfo = new PaginationInfo {
+                CurrentPage = paging.PageNumber,
                 TotalPages = totalPages
             };
+          
+            var modelView = new VehicleModelView {
+                sort = sort, 
+                PaginationInfo = paginationInfo,
+                Makes = await _vehicleService.GetAllVehiclesMakes(), 
+                models = _mapper.Map<IEnumerable<VMVehicle>>(models) 
+            };
 
-   
-           var modelView = new VehicleModelView();
-            {
-                modelView.SortBy = sortby;
-                modelView.filter = filter;
-                modelView.SortOrder = sortorder;
-                modelView.Makes = makes;
-                modelView.models = _mapper.Map<IEnumerable<VMVehicle>>(pagedModels);
-                modelView.PaginationInfo = paginationInfo;
-            }
 
-            foreach(VMVehicle mo in modelView.models)
-            {
-                mo.make = await _vehicleService.getMake(mo.MakeId);
-            }
-           
             return View(modelView);
         }
         public async Task<ActionResult> Create()
@@ -88,12 +64,10 @@ namespace Project.MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(VehicleModelView model)
         {
-            
-           // model.Makes = await _vehicleService.GetAllVehiclesMakes();
             if (ModelState.IsValid)
             {
                 var entity = _mapper.Map<VehicleModel>(model.modell);
-                await _vehicleService.CreateVehicleModel(entity);
+                await _vehicleModelService.CreateVehicleModel(entity);
                 return RedirectToAction("Index");
             }
             return View(model);
@@ -102,7 +76,7 @@ namespace Project.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteVehicle(int id)
         {
-            int result = await _vehicleService.DeleteVehicleModel(id);
+            int result = await _vehicleModelService.DeleteVehicleModel(id);
 
             if (result == 1)
             {
@@ -118,9 +92,9 @@ namespace Project.MVC.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateVehicleModel(VehicleModel updatedVehicle)
-        {
-            int result = await _vehicleService.UpdateVehicleModel(updatedVehicle);
+        public async Task<IActionResult> Edit(VehicleModelView modelView)           
+        {        
+            int result = await _vehicleModelService.UpdateVehicleModel(modelView.modell);
 
             if (result == 1)
             {
@@ -135,5 +109,24 @@ namespace Project.MVC.Controllers
                 return StatusCode(500, "Failed to update vehicle model.");
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var model = await _vehicleModelService.GetById(id);
+
+            if (model == null)
+            {
+                return NotFound(); 
+            }
+
+            var viewModel = new VehicleModelView
+            {
+                modell = model,
+                Makes = await _vehicleService.GetAllVehiclesMakes()
+            };
+
+            return View(viewModel);
+        }
+
     }
 }

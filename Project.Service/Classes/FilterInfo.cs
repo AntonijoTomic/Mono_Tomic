@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace Project.Service.Classes
 {
-    public class SortingInfo
+    public class Filter_Info
     {
-        public string SortBy { get; set; }
-        public string SortOrder { get; set; }     
-    
+        public string Filter { get; set; }
     }
 }
-

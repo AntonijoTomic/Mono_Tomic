@@ -32,21 +32,22 @@ namespace Project.MVC.Controllers
 
         }
 
-        public async Task<IActionResult> Index(SortingInfo sort, PagingInfo paging)
+        public async Task<IActionResult> Index(SortingInfo sort, PagingInfo paging, Filter_Info filter_Info)
         {
   
-            var (models, totalPages) = await _vehicleModelService.SortModelsAndFilter(sort, paging);
+            var pagedResult = await _vehicleModelService.SortModelsAndFilterAsync(sort, paging, filter_Info);
           
             var paginationInfo = new PaginationInfo {
                 CurrentPage = paging.PageNumber,
-                TotalPages = totalPages
+                TotalPages = pagedResult.TotalPages
             };
           
             var modelView = new VehicleModelView {
-                sort = sort, 
+                Sort = sort, 
+                Filter = filter_Info,
                 PaginationInfo = paginationInfo,
-                Makes = await _vehicleService.GetAllVehiclesMakes(), 
-                models = _mapper.Map<IEnumerable<VMVehicle>>(models) 
+                Makes = await _vehicleService.GetAllVehicleMakesAsync(), 
+                Models = _mapper.Map<IEnumerable<VMVehicle>>(pagedResult.Data) 
             };
 
 
@@ -56,7 +57,7 @@ namespace Project.MVC.Controllers
         {
            var viewModel = new VehicleModelView // podaci za padajuci izbornik 
             {
-                Makes = await _vehicleService.GetAllVehiclesMakes()
+                Makes = await _vehicleService.GetAllVehicleMakesAsync()
             };
 
             return View(viewModel);
@@ -66,8 +67,8 @@ namespace Project.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var entity = _mapper.Map<VehicleModel>(model.modell);
-                await _vehicleModelService.CreateVehicleModel(entity);
+                var entity = _mapper.Map<VehicleModel>(model.Modell);
+                await _vehicleModelService.CreateVehicleModelAsync(entity);
                 return RedirectToAction("Index");
             }
             return View(model);
@@ -76,7 +77,7 @@ namespace Project.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteVehicle(int id)
         {
-            int result = await _vehicleModelService.DeleteVehicleModel(id);
+            int result = await _vehicleModelService.DeleteVehicleModelAsync(id);
 
             if (result == 1)
             {
@@ -94,7 +95,7 @@ namespace Project.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(VehicleModelView modelView)           
         {        
-            int result = await _vehicleModelService.UpdateVehicleModel(modelView.modell);
+            int result = await _vehicleModelService.UpdateVehicleModelAsync(modelView.Modell);
 
             if (result == 1)
             {
@@ -112,7 +113,7 @@ namespace Project.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var model = await _vehicleModelService.GetById(id);
+            var model = await _vehicleModelService.GetByIdAsync(id);
 
             if (model == null)
             {
@@ -121,8 +122,8 @@ namespace Project.MVC.Controllers
 
             var viewModel = new VehicleModelView
             {
-                modell = model,
-                Makes = await _vehicleService.GetAllVehiclesMakes()
+                Modell = model,
+                Makes = await _vehicleService.GetAllVehicleMakesAsync()
             };
 
             return View(viewModel);

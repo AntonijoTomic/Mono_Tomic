@@ -16,13 +16,13 @@
         <tr>
 
             <th>
-                <a asp-action="Index" asp-route-filter="@(Model.sort.Filter)" asp-route-sortby="Name" asp-route-sortorder="@(Model.sort.SortBy == "Name" && Model.sort.SortOrder == "asc" ? "desc" : "asc")">Name</a>
+                <a asp-action="Index" asp-route-filter="@(Model.Filter.Filter)" asp-route-sortby="Name" asp-route-sortorder="@(Model.Sort.SortBy == "Name" && Model.Sort.SortOrder == "asc" ? "desc" : "asc")">Name</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-filter="@(Model.sort.Filter)" asp-route-sortby="Abrv" asp-route-sortorder="@(Model.sort.SortBy == "Abrv" && Model.sort.SortOrder == "asc" ? "desc" : "asc")">Abrv</a>
+                <a asp-action="Index" asp-route-filter="@(Model.Filter.Filter)" asp-route-sortby="Abrv" asp-route-sortorder="@(Model.Sort.SortBy == "Abrv" && Model.Sort.SortOrder == "asc" ? "desc" : "asc")">Abrv</a>
             </th>
              <th>
-                <a asp-action="Index" asp-route-filter="@(Model.sort.Filter)" asp-route-sortby="Makes" asp-route-sortorder="@(Model.sort.SortBy == "Makes" && Model.sort.SortOrder == "asc" ? "desc" : "asc")">Makes</a>
+                <a asp-action="Index" asp-route-filter="@(Model.Filter.Filter)" asp-route-sortby="Makes" asp-route-sortorder="@(Model.Sort.SortBy == "Makes" && Model.Sort.SortOrder == "asc" ? "desc" : "asc")">Makes</a>
             </th>
             <th>
                 <a>Delete</a>
@@ -33,7 +33,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var vehicleModel in Model.models)
+        @foreach (var vehicleModel in Model.Models)
         {
             <tr>
                 <td>
@@ -43,7 +43,7 @@
                     @Html.DisplayFor(modelItem => vehicleModel.Abrv)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => vehicleModel.make.Name)
+                    @Html.DisplayFor(modelItem => vehicleModel.Make.Name)
                 </td>
                 <td>
                     <form asp-controller="VehicleModel" asp-action="DeleteVehicle" method="post">
@@ -65,21 +65,21 @@
         @if (Model.PaginationInfo.CurrentPage > 1)
         {
             <li class="page-item">
-                <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PaginationInfo.CurrentPage - 1)" asp-route-filter="@(Model.sort.Filter)" asp-route-sortby="@(Model.sort.SortBy)" asp-route-sortorder="@(Model.sort.SortOrder)">Previous</a>
+                <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PaginationInfo.CurrentPage - 1)" asp-route-filter="@(Model.Filter.Filter)" asp-route-sortby="@(Model.Sort.SortBy)" asp-route-sortorder="@(Model.Sort.SortOrder)">Previous</a>
             </li>
         }
 
         @for (int i = 1; i <= Model.PaginationInfo.TotalPages; i++)
         {
             <li class="page-item @(i == Model.PaginationInfo.CurrentPage ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-filter="@(Model.sort.Filter)" asp-route-sortby="@(Model.sort.SortBy)" asp-route-sortorder="@(Model.sort.SortOrder)">@i</a>
+                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-filter="@(Model.Filter.Filter)" asp-route-sortby="@(Model.Sort.SortBy)" asp-route-sortorder="@(Model.Sort.SortOrder)">@i</a>
             </li>
         }
 
         @if (Model.PaginationInfo.CurrentPage < Model.PaginationInfo.TotalPages)
         {
             <li class="page-item">
-                <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PaginationInfo.CurrentPage + 1)" asp-route-filter="@(Model.sort.Filter)" asp-route-sortby="@(Model.sort.SortBy)" asp-route-sortorder="@(Model.sort.SortOrder)">NEXT</a>
+                <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PaginationInfo.CurrentPage + 1)" asp-route-filter="@(Model.Filter.Filter)" asp-route-sortby="@(Model.Sort.SortBy)" asp-route-sortorder="@(Model.Sort.SortOrder)">NEXT</a>
             </li>
         }
     </ul>

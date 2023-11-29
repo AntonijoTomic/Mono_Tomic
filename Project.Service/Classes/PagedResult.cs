@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Project.Service.Classes
 {
-    public class SortingInfo
+    public class PagedResult<T>
     {
-        public string SortBy { get; set; }
-        public string SortOrder { get; set; }     
-    
+        public IEnumerable<T> Data { get; set; }
+        public int TotalPages { get; set; }
     }
 }
-

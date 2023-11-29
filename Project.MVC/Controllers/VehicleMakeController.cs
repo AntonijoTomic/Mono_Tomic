@@ -21,21 +21,22 @@ namespace Project.MVC.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> Index(SortingInfo sort, PagingInfo paging)
+        public async Task<IActionResult> Index(SortingInfo sort, PagingInfo paging,  Filter_Info filter)
         {
           
-            var (vehicleMakes, totalPages) = await _vehicleMakeService.sortMakesAndFilter(sort, paging);
+            var pagedResult = await _vehicleMakeService.SortMakesAndFilterAsync(sort, paging, filter);
             var paginationInfo = new PaginationInfo
             {
                 CurrentPage = paging.PageNumber,
-                TotalPages = totalPages
+                TotalPages = pagedResult.TotalPages
             };
 
             var makesViewModel = new VehicleMakeView
             {
-                sort= sort,
+                Filter = filter,
+                Sort = sort,
                 PaginationInfo = paginationInfo,      
-                Makes = _mapper.Map<IEnumerable<VehicleMake>>(vehicleMakes)
+                Makes = _mapper.Map<IEnumerable<VehicleMake>>(pagedResult.Data)
             };
 
             return View(makesViewModel);
@@ -51,7 +52,7 @@ namespace Project.MVC.Controllers
             {
                 var entity = _mapper.Map<VehicleMake>(make);
 
-                await _vehicleMakeService.CreateVehicleMake(entity);
+                await _vehicleMakeService.CreateVehicleMakeAsync(entity);
                 return RedirectToAction("Index");
             }
             return View(make);
@@ -59,7 +60,7 @@ namespace Project.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteVehicle(int id)
         {
-            int result = await _vehicleMakeService.DeleteVehicleMakes(id);
+            int result = await _vehicleMakeService.DeleteVehicleMakesAsync(id);
 
             if (result == 1)
             {
@@ -77,7 +78,7 @@ namespace Project.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(VehicleMakeView makeView)
         {
-            int result = await _vehicleMakeService.UpdateVehicleMake(makeView.make);
+            int result = await _vehicleMakeService.UpdateVehicleMakeAsync(makeView.make);
 
             if (result == 1)
             {
@@ -95,7 +96,7 @@ namespace Project.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var make = await _vehicleMakeService.getMake(id);
+            var make = await _vehicleMakeService.GetMakeAsync(id);
 
             if (make == null)
             {

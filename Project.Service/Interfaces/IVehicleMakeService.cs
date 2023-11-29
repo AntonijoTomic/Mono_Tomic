@@ -11,21 +11,21 @@ namespace Project.Service.Interfaces
     public interface IVehicleMakeService
     {
 
-        Task<IEnumerable<VehicleMake>> GetAllVehiclesMakes();
+        Task<IEnumerable<VehicleMake>> GetAllVehicleMakesAsync();
     //    Task <IEnumerable<VehicleModel>> GetAllModels();//
-        Task<VehicleMake> getMake(int makeID);
-        Task<int> CreateVehicleMake(VehicleMake vehicle);
+        Task<VehicleMake> GetMakeAsync(int makeID);
+        Task<int> CreateVehicleMakeAsync(VehicleMake vehicle);
      //   Task<int> CreateVehicleModel(VehicleModel vehicle);//
-        Task<int> UpdateVehicleMake(VehicleMake vehicle);
-        Task<int> DeleteVehicleMakes(int id);
+        Task<int> UpdateVehicleMakeAsync(VehicleMake vehicle);
+        Task<int> DeleteVehicleMakesAsync(int id);
 
       //  Task<int> UpdateVehicleModel(VehicleModel vehicle);//
      //   Task<int> DeleteVehicleModel(int id);//
 
-        Task<(IEnumerable<VehicleMake>, int totalPages)> sortMakesAndFilter(SortingInfo sort, PagingInfo paging);
+        Task<PagedResult<VehicleMake>> SortMakesAndFilterAsync(SortingInfo sort, PagingInfo paging, Filter_Info filter);
         //  Task<(IEnumerable<VehicleModel>, int totalPages)> SortModelsAndFilter(SortingInfo sort, PagingInfo paging);
 
-        Task<IEnumerable<VehicleMake>> FilterBySearch(List<VehicleMake> makes, string search);
+       // Task<IEnumerable<VehicleMake>> FilterBySearch(List<VehicleMake> makes, string search);
 
     //   Task<IEnumerable<VehicleModel>> FilterByMake(int filterId);//
 

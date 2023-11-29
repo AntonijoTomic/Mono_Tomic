@@ -5,7 +5,8 @@ namespace Project.MVC.ViewModels
 {
     public class VehicleMakeView
     {
-        public SortingInfo? sort { get; set; }
+        public SortingInfo? Sort { get; set; }
+        public Filter_Info ? Filter { get; set; }
         public PaginationInfo? PaginationInfo { get; set; }
         public IEnumerable<VehicleMake>? Makes { get; set; }
 

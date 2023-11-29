@@ -16,7 +16,7 @@ namespace Project.Service.Services
         public VehicleModelService(ApplicationDbContext vehicleRepository) { 
             _dbContext = vehicleRepository;
         }
-        public async Task<int> CreateVehicleModel(VehicleModel vehicle)
+        public async Task<int> CreateVehicleModelAsync(VehicleModel vehicle)
         {
             if (vehicle == null)
             {
@@ -34,7 +34,7 @@ namespace Project.Service.Services
             }
         }
 
-        public async Task<int> DeleteVehicleModel(int id)
+        public async Task<int> DeleteVehicleModelAsync(int id)
         {
             try
             {
@@ -56,26 +56,26 @@ namespace Project.Service.Services
             }
         }
 
-        public  async Task<IEnumerable<VehicleModel>> FilterByMake(int filterId)
+        public  async Task<IEnumerable<VehicleModel>> FilterByMakeAsync(int filterId)
         {
             return await _dbContext.VehicleModel
                                                .Where(m => m.MakeId == filterId)
                                                .ToListAsync();
         }
 
-        public  async Task<IEnumerable<VehicleModel>> GetAllModels()
+        public  async Task<IEnumerable<VehicleModel>> GetAllModelsAsync()
         {
             return await _dbContext.VehicleModel.Include(vm => vm.Make).ToListAsync();
         }
 
-        public async Task<VehicleModel> GetById(int id)
+        public async Task<VehicleModel> GetByIdAsync(int id)
         {
            return await _dbContext.VehicleModel.Where(m => m.Id == id).Include(vm => vm.Make).FirstOrDefaultAsync();
         }
 
   
 
-        public async Task<(IEnumerable<VehicleModel>, int totalPages)> SortModelsAndFilter(SortingInfo sort, PagingInfo paging)
+        public async Task<PagedResult<VehicleModel>> SortModelsAndFilterAsync(SortingInfo sort, PagingInfo paging, Filter_Info filter)
         {
             var models = _dbContext.VehicleModel.Include(m => m.Make).AsQueryable();
 
@@ -94,9 +94,9 @@ namespace Project.Service.Services
             }
 
 
-            if (Convert.ToInt32(sort.Filter) > 0)
+            if (Convert.ToInt32(filter.Filter) > 0)
             {
-                models = models.Where(m => m.Make.Id == (Convert.ToInt32(sort.Filter)));
+                models = models.Where(m => m.Make.Id == (Convert.ToInt32(filter.Filter)));
             }
 
             var totalItems =  models.Count();
@@ -104,10 +104,16 @@ namespace Project.Service.Services
 
             models = models.Skip((paging.PageNumber - 1) * paging.PageSize).Take(paging.PageSize);
 
-            return (await models.ToListAsync(), totalPages);
+            var pagedResult = new PagedResult<VehicleModel>
+            {
+                Data = models,
+                TotalPages = totalPages
+            };
+
+            return pagedResult;
         }
 
-        public async Task<int> UpdateVehicleModel(VehicleModel vehicle)
+        public async Task<int> UpdateVehicleModelAsync(VehicleModel vehicle)
         {
             if (vehicle == null)
             {

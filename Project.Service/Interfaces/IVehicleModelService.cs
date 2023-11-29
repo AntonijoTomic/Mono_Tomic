@@ -10,14 +10,14 @@ namespace Project.Service.Interfaces
 {
     public interface IVehicleModelService
     {
-        Task<IEnumerable<VehicleModel>> GetAllModels();
-        Task<VehicleModel> GetById(int id);
-        Task<int> CreateVehicleModel(VehicleModel vehicle);
-        Task<int> UpdateVehicleModel(VehicleModel vehicle);
-        Task<int> DeleteVehicleModel(int id);
-        Task<(IEnumerable<VehicleModel>, int totalPages)> SortModelsAndFilter(SortingInfo sort, PagingInfo paging);
+        Task<IEnumerable<VehicleModel>> GetAllModelsAsync();
+        Task<VehicleModel> GetByIdAsync(int id);
+        Task<int> CreateVehicleModelAsync(VehicleModel vehicle);
+        Task<int> UpdateVehicleModelAsync(VehicleModel vehicle);
+        Task<int> DeleteVehicleModelAsync(int id);
+        Task<PagedResult<VehicleModel>> SortModelsAndFilterAsync(SortingInfo sort, PagingInfo paging, Filter_Info filter);
 
-        Task<IEnumerable<VehicleModel>> FilterByMake(int filterId);
+        Task<IEnumerable<VehicleModel>> FilterByMakeAsync(int filterId);
 
 
     }

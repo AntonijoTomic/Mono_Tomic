@@ -25,7 +25,7 @@ namespace Project.Service.Services
             _dbContext = vehicleRepository;         
     
         }
-        public async Task<int> CreateVehicleMake(VehicleMake vehicle)
+        public async Task<int> CreateVehicleMakeAsync(VehicleMake vehicle)
         {
             if (vehicle == null)
             {
@@ -45,7 +45,7 @@ namespace Project.Service.Services
 
 
  
-        public async Task<int> DeleteVehicleMakes(int id)
+        public async Task<int> DeleteVehicleMakesAsync(int id)
         {           
             try
             {
@@ -67,14 +67,14 @@ namespace Project.Service.Services
             }
         }
 
-        public async Task<IEnumerable<VehicleMake>> GetAllVehiclesMakes()
+        public async Task<IEnumerable<VehicleMake>> GetAllVehicleMakesAsync()
         {
             return await _dbContext.VehicleMake.ToListAsync();
         }
 
        
 
-        public async Task<int> UpdateVehicleMake(VehicleMake vehicle)
+        public async Task<int> UpdateVehicleMakeAsync(VehicleMake vehicle)
         {
             if (vehicle == null)
             {
@@ -105,7 +105,7 @@ namespace Project.Service.Services
         }
 
 
-        public async Task<(IEnumerable<VehicleMake>, int totalPages)> sortMakesAndFilter(SortingInfo sort, PagingInfo paging)
+        public async Task<PagedResult<VehicleMake>> SortMakesAndFilterAsync(SortingInfo sort, PagingInfo paging, Filter_Info filter)
         {
             var makes =  _dbContext.VehicleMake.AsQueryable();
             switch (sort.SortBy)
@@ -120,9 +120,9 @@ namespace Project.Service.Services
  
 
 
-            if (!string.IsNullOrEmpty(sort.Filter))
+            if (!string.IsNullOrEmpty(filter.Filter))
             {
-                makes = makes.Where(m => m.Name.ToUpper().Contains(sort.Filter.ToUpper()));
+                makes = makes.Where(m => m.Name.ToUpper().Contains(filter.Filter.ToUpper()));
             }
 
             var totalItems = makes.Count();
@@ -130,19 +130,25 @@ namespace Project.Service.Services
 
             makes = makes.Skip((paging.PageNumber - 1) * paging.PageSize).Take(paging.PageSize);
 
-            return (await makes.ToListAsync(), totalPages);
+            var pagedResult = new PagedResult<VehicleMake>
+            {
+                Data = await makes.ToListAsync(),
+                TotalPages = totalPages
+            };
+
+            return pagedResult;
         } 
 
-        public async Task<IEnumerable<VehicleMake>> FilterBySearch(List<VehicleMake> makes,string search)
+      /*  public async Task<IEnumerable<VehicleMake>> FilterBySearch(List<VehicleMake> makes,string search)
         {
             return from m in makes where m.Name.ToUpper().Contains(search.ToUpper()) select m;
            // return makes.Where(m => m.Name.ToUpper().Contains(search.ToUpper()));
-        }
+        }*/
 
      
 
        
-        public async Task<VehicleMake> getMake(int makeId)
+        public async Task<VehicleMake> GetMakeAsync(int makeId)
         {   
             return await _dbContext.VehicleMake.Where(m => m.Id == makeId).FirstOrDefaultAsync();   
         }
